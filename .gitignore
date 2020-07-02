@@ -1,0 +1,9 @@
+
+*.sln
+*.db
+*.opendb
+*.ipch
+.vs/NeuralNetwork/v15/.suo
+*.user
+*.filters
+*.vcxproj
