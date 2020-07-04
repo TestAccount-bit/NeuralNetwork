@@ -43,8 +43,8 @@ inline Matrix<T>::Matrix(size_t rows, size_t cols, std::vector<T> data)
 template<class T>
 inline T & Matrix<T>::operator()(size_t i, size_t j)
 {
-	if (i >= 0 && i < rows && j >= 0 && j < rows) {
-		return data.at(i*cols + j);
+	if (i >= 0 && i < this->rows && j >= 0 && j < this->rows) {
+		return data.at(i*this->cols + j);
 	}
 	else {
 		cout << "Out of bounds " << endl;
@@ -67,19 +67,27 @@ inline T Matrix<T>::operator()(size_t i, size_t j) const
 template<class T>
 Matrix<T>& Matrix<T>::operator=(Matrix<T> m)
 {
-	this->rows = m.rows;
-	this->cols = m.cols;
-	this->data = m.data;
-	return *this;
+	if (m.rows == this->rows && m.cols == this->cols) {
+		this->rows = m.rows;
+		this->cols = m.cols;
+		this->data = m.data;
+		return *this;
+	}
+	cout << "Matrices of different size(1)" << endl;
+	exit(0);
 }
 
 template<class T>
 Matrix<T> Matrix<T>::operator=(Matrix<T> m) const
 {
-	this->rows = m.rows;
-	this->cols = m.cols;
-	this->data = m.data;
-	return *this;
+	if (m.rows == this->rows && m.cols == this->cols) {
+		this->rows = m.rows;
+		this->cols = m.cols;
+		this->data = m.data;
+		return *this;
+	}
+	cout << "Matrices of different size(2)" << endl;
+	exit(0);
 }
 
 template<class T>
@@ -136,6 +144,56 @@ Matrix<T> Matrix<T>::operator+(Matrix<T> m) const
 	cout << "this->rows " << this->rows << ", this->cols " << this->cols << endl;
 	cout << "Can't add different matricies(7)" << endl;
 	exit(0); 
+}
+
+template<class T>
+Matrix<T>& Matrix<T>::operator-=(Matrix<T> m)
+{
+	if (m.rows == this->rows && m.cols == this->cols)
+	{
+		for (int i = 0; i < m.rows; i++)
+			for (int j = 0; j < m.cols; j++)
+				(*this)(i, j) = (*this)(i, j) - m(i, j);
+		return *this;
+	}
+	cout << "Can't subtract different matricies(1)" << endl;
+	exit(0);
+}
+
+template<class T>
+Matrix<T> Matrix<T>::operator-=(Matrix<T> m) const
+{
+	if (m.rows == this->rows && m.cols == this->cols)
+	{
+		for (int i = 0; i < m.rows; i++)
+			for (int j = 0; j < m.cols; j++)
+				(*this)(i, j) = (*this)(i, j) - m(i, j);
+		return *this;
+	}
+	cout << "Can't subtract different matricies(1)" << endl;
+	exit(0);
+}
+
+template<class T>
+Matrix<T>& Matrix<T>::operator-(Matrix<T> m)
+{
+	if (m.rows == this->rows && m.cols == this->cols)
+	{
+		return (*this) -= m;
+	}
+	cout << "Can't subtract different matrices(3)" << endl;
+	exit(0);
+}
+
+template<class T>
+Matrix<T> Matrix<T>::operator-(Matrix<T> m) const
+{
+	if (m.rows == this->rows && m.cols == this->cols)
+	{
+		return (*this) -= m;
+	}
+	cout << "Can't subtract different matrices(4)" << endl;
+	exit(0);
 }
 
 template<class T>
