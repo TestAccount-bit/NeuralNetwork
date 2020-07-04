@@ -65,8 +65,83 @@ inline T Matrix<T>::operator()(size_t i, size_t j) const
 }
 
 template<class T>
+Matrix<T>& Matrix<T>::operator=(Matrix<T> m)
+{
+	this->rows = m.rows;
+	this->cols = m.cols;
+	this->data = m.data;
+	return *this;
+}
+
+template<class T>
+Matrix<T> Matrix<T>::operator=(Matrix<T> m) const
+{
+	this->rows = m.rows;
+	this->cols = m.cols;
+	this->data = m.data;
+	return *this;
+}
+
+template<class T>
+Matrix<T>& Matrix<T>::operator+=(Matrix<T> m)
+{
+	if (m.rows == this->rows && m.cols == this->cols)
+	{
+		for (int i = 0; i < m.rows; i++)
+			for (int j = 0; j < m.cols; j++)
+				(*this)(i, j) = (*this)(i, j) + m(i, j);
+		//m3.print();
+		return *this;
+	}
+	cout << "Can't add different matricies(5)" << endl;
+	exit(0);
+}
+
+template<class T>
+Matrix<T> Matrix<T>::operator+=(Matrix<T> m) const
+{
+	if (m.rows == this->rows && m.cols == this->cols)
+	{
+		for (int i = 0; i < m.rows; i++)
+			for (int j = 0; j < m.cols; j++)
+				this(i, j) = this(i, j) + m(i, j);
+		//m3.print();
+		return this;
+	}
+	cout << "Can't add different matricies(4)" << endl;
+	exit(0);
+}
+
+template<class T>
+Matrix<T>& Matrix<T>::operator+(Matrix<T> m)
+{
+	if (m.rows == this->rows && m.cols == this->cols) 
+	{
+		return (*this) += m;
+	}
+	cout << "m.rows " << m.rows << ", m.cols " << m.cols << endl;
+	cout << "this->rows " << this->rows << ", this->cols " << this->cols << endl;
+	cout << "Can't add different matricies(6)" << endl;
+	exit(0); 
+}
+
+template<class T>
+Matrix<T> Matrix<T>::operator+(Matrix<T> m) const
+{
+	if (m.rows == this->rows && m.cols == this->cols) 
+	{
+		return (*this) += m;
+	}
+	cout << "m.rows " << m.rows << ", m.cols " << m.cols << endl;
+	cout << "this->rows " << this->rows << ", this->cols " << this->cols << endl;
+	cout << "Can't add different matricies(7)" << endl;
+	exit(0); 
+}
+
+template<class T>
 inline Matrix<T>::~Matrix()
 {
+	vector<T>().swap(data);
 }
 
 template<class T>
