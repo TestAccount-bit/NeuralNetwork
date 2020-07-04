@@ -1,17 +1,18 @@
 #pragma once
 
 #include <vector>
+template<class T>
 class Matrix
 {
 public:
-	Matrix(size_t rows, size_t cols);
-	Matrix(size_t rows, size_t cols, std::vector<double> data);
-	double& operator()(size_t i, size_t j);
-	double operator()(size_t i, size_t j) const;
+	inline Matrix<T>(size_t rows, size_t cols);
+	inline Matrix<T>(size_t rows, size_t cols, std::vector<T> data);
+	inline T& operator()(size_t i, size_t j);
+	inline T operator()(size_t i, size_t j) const;
 
-	~Matrix();
-	void print(int precision=3);
-	std::vector<double> data;
+	inline ~Matrix();
+	inline void print(int precision=3);
+	std::vector<T> data;
 private:
 	size_t rows;
 	size_t cols;

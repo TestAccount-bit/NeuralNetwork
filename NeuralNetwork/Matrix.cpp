@@ -6,28 +6,9 @@
 
 using namespace std;
 
-//Matrix::Matrix(size_t rows, size_t cols)
-//{
-//	try {
-//		if (rows < 1) { throw 1; }
-//		if (cols < 1) { throw 2; }
-//		this->rows = rows;
-//		this->cols = cols;
-//		data = vector<double>(rows*cols, 0.0);
-//	}
-//	catch (int n) 
-//	{
-//		cout << "\"rows\" and \"cols\" must be more than 0" << endl;
-//		exit(0);
-//	}
-//	catch (exception& e) {
-//		cout << "exception in Matrix(size_t rows, size_t cols) constructor" << endl;
-//		exit(0);
-//		//abort();
-//	}
-//}
 
-Matrix::Matrix(size_t rows, size_t cols)
+template<class T>
+inline Matrix<T>::Matrix(size_t rows, size_t cols)
 {
 	//cout << "rows: " << rows << "columns: " << cols << endl;
 	if (rows == 0 || cols == 1 || rows > 30 || cols > 30) 
@@ -38,18 +19,18 @@ Matrix::Matrix(size_t rows, size_t cols)
 	else {
 		this->rows = rows;
 		this->cols = cols;
-		data = vector<double>(rows*cols, 0.0);
+		data = vector<T>(rows*cols, 0);
 	}
 }
 
-Matrix::Matrix(size_t rows, size_t cols, std::vector<double> data)
+template<class T>
+inline Matrix<T>::Matrix(size_t rows, size_t cols, std::vector<T> data)
 {
-
 	if (data.size() != rows * cols) {
 		cout << "rows*cols != data.size()" << endl;
 		exit(0);
 	}
-	if (rows == 0 || cols == 1 || rows > 30 || cols > 30) {
+	if (rows == 0 || cols == 0 || rows > 30 || cols > 30) {
 		cout << "\"rows\" and \"cols\" must be more than 0" << endl;
 		exit(0);
 	}
@@ -58,7 +39,9 @@ Matrix::Matrix(size_t rows, size_t cols, std::vector<double> data)
 	this->data = data;
 }
 
-double & Matrix::operator()(size_t i=0, size_t j=0)
+
+template<class T>
+inline T & Matrix<T>::operator()(size_t i, size_t j)
 {
 	if (i >= 0 && i < rows && j >= 0 && j < rows) {
 		return data.at(i*cols + j);
@@ -69,7 +52,8 @@ double & Matrix::operator()(size_t i=0, size_t j=0)
 	}
 }
 
-double Matrix::operator()(size_t i, size_t j) const
+template<class T>
+inline T Matrix<T>::operator()(size_t i, size_t j) const
 {
 	if (i >= 0 && i < rows && j >= 0 && j < rows) {
 		return data.at(i*cols + j);
@@ -80,12 +64,13 @@ double Matrix::operator()(size_t i, size_t j) const
 	}
 }
 
-
-Matrix::~Matrix()
+template<class T>
+inline Matrix<T>::~Matrix()
 {
 }
 
-void Matrix::print(int precision)
+template<class T>
+inline void Matrix<T>::print(int precision)
 {
 	try {
 		for (int i = 0; i < (int)rows; i++) {
@@ -100,3 +85,4 @@ void Matrix::print(int precision)
 		cout << e.what() << endl;
 	}
 }
+
