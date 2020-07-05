@@ -11,7 +11,7 @@ template<class T>
 inline Matrix<T>::Matrix(size_t rows, size_t cols)
 {
 	//cout << "rows: " << rows << "columns: " << cols << endl;
-	if (rows == 0 || cols == 1 || rows > 30 || cols > 30) 
+	if (rows == 0 || cols == 0 || rows > 30 || cols > 30) 
 	{ 
 		cout << "Nonpositive amount of rows or/and columns" << endl;
 		exit(0);
@@ -39,15 +39,21 @@ inline Matrix<T>::Matrix(size_t rows, size_t cols, std::vector<T> data)
 	this->data = data;
 }
 
+template<class T>
+inline Matrix<T>::~Matrix()
+{
+	vector<T>().swap(data);
+}
 
 template<class T>
 inline T & Matrix<T>::operator()(size_t i, size_t j)
 {
-	if (i >= 0 && i < this->rows && j >= 0 && j < this->rows) {
+	if (i >= 0 && i < this->rows && j >= 0 && j < this->cols) {
 		return data.at(i*this->cols + j);
 	}
 	else {
-		cout << "Out of bounds " << endl;
+		cout << "Out of bounds " << this->rows << " " << this->cols <<endl;
+		cout << "i " << i << ", j " << j << endl;
 		exit(0);
 	}
 }
@@ -55,11 +61,11 @@ inline T & Matrix<T>::operator()(size_t i, size_t j)
 template<class T>
 inline T Matrix<T>::operator()(size_t i, size_t j) const
 {
-	if (i >= 0 && i < rows && j >= 0 && j < rows) {
+	if (i >= 0 && i < rows && j >= 0 && j < cols) {
 		return data.at(i*cols + j);
 	}
 	else {
-		cout << "Out of bounds " << endl;
+		cout << "Out of bounds(2) " << endl;
 		exit(0);
 	}
 }
@@ -197,10 +203,108 @@ Matrix<T> Matrix<T>::operator-(Matrix<T> m) const
 }
 
 template<class T>
-inline Matrix<T>::~Matrix()
+Matrix<T>& Matrix<T>::operator*=(Matrix<T> m)
 {
-	vector<T>().swap(data);
+	if (this->cols == m.rows) {
+		Matrix<T> ret(this->rows, m.cols);
+		for (int i = 0; i < this->rows; i++) {
+			for (int j = 0; j < m.cols; j++) {
+				for (int k = 0; k < this->cols; k++) {
+					//cout << "ret(" << i << ", " << j << ") += (" << (*this)(i, k) << "*" << m(k, j) << ")" << endl;
+					ret(i, j) += ((*this)(i, k) * m(k, j));
+					//cout << "ret(" << i << ", " << j << ") ==" << ret(i, j) << endl;
+				}
+				
+			}
+		}
+		this->cols = m.cols;
+		(*this) = ret;
+		return *this;
+	}
+	cout << "this->cols(" << this->cols << ") must be equal m.rows(" << m.rows << ")" << endl;
+	exit(0);
 }
+
+template<class T>
+Matrix<T> Matrix<T>::operator*=(Matrix<T> m) const
+{
+	if (this->cols == m.rows) {
+		Matrix<T> ret(this->rows, m.cols);
+		for (int i = 0; i < this->rows; i++) {
+			for (int j = 0; j < m.cols; j++) {
+				for (int k = 0; k < this->cols; k++) {
+					//cout << "ret(" << i << ", " << j << ") += (" << (*this)(i, k) << "*" << m(k, j) << ")" << endl;
+					ret(i, j) += ((*this)(i, k) * m(k, j));
+				}
+			}
+		}
+		this->cols = m.cols;
+		(*this) = ret;
+		return *this;
+	}
+	cout << "this->cols(" << this->cols << ") must be equal m.rows(" << m.rows << ")" << endl;
+	exit(0);
+}
+
+template<class T>
+Matrix<T>& Matrix<T>::operator*(Matrix<T> m)
+{
+	return (*this) *= m;
+}
+
+template<class T>
+Matrix<T> Matrix<T>::operator*(Matrix<T> m) const
+{
+	return (*this) *= m;
+}
+
+template<class T>
+Matrix<T>& Matrix<T>::operator*=(T num)
+{
+	for (int i = 0; i < this->rows; i++)
+		for (int j = 0; j < this->cols; j++)
+			(*this)(i, j) = (*this)(i, j) * num;
+	return *this;
+}
+
+template<class T>
+Matrix<T> Matrix<T>::operator*=(T num) const
+{
+	for (int i = 0; i < this->rows; i++)
+		for (int j = 0; j < this->cols; j++)
+			(*this)(i, j) = (*this)(i, j) * num;
+	return *this;
+}
+
+template<class T>
+Matrix<T>& Matrix<T>::operator*(T num)
+{
+	return (*this) *= num;
+}
+
+template<class T>
+Matrix<T> Matrix<T>::operator*(T num) const
+{
+	return (*this) *= num;
+}
+
+template<class T>
+Matrix<T> Matrix<T>::transpose()
+{
+	Matrix<T> temp(this->cols, this->rows);
+
+	for (int i = 0; i < this->rows; i++) {
+		for (int j = 0; j < this->cols; j++) {
+			temp(j, i) = (*this)(i, j);
+		}
+	}
+	int tmp = this->rows;
+	this->rows = this->cols;
+	this->cols = tmp;
+	(*this) = temp;
+	return *this;
+}
+
 
 template<class T>
 inline void Matrix<T>::print(int precision)
