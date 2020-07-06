@@ -4,6 +4,9 @@
 #include <vector>
 #include <iomanip>
 
+#define MATRIX_MAX_SIZE 1024
+
+
 using namespace std;
 
 
@@ -11,7 +14,7 @@ template<class T>
 inline Matrix<T>::Matrix(size_t rows, size_t cols)
 {
 	//cout << "rows: " << rows << "columns: " << cols << endl;
-	if (rows == 0 || cols == 0 || rows > 30 || cols > 30) 
+	if (rows == 0 || cols == 0 || rows > MATRIX_MAX_SIZE || cols > MATRIX_MAX_SIZE)
 	{ 
 		cout << "Nonpositive amount of rows or/and columns" << endl;
 		exit(0);
@@ -30,7 +33,7 @@ inline Matrix<T>::Matrix(size_t rows, size_t cols, std::vector<T> data)
 		cout << "rows*cols != data.size()" << endl;
 		exit(0);
 	}
-	if (rows == 0 || cols == 0 || rows > 30 || cols > 30) {
+	if (rows == 0 || cols == 0 || rows > MATRIX_MAX_SIZE || cols > MATRIX_MAX_SIZE) {
 		cout << "\"rows\" and \"cols\" must be more than 0" << endl;
 		exit(0);
 	}
@@ -43,6 +46,18 @@ template<class T>
 inline Matrix<T>::~Matrix()
 {
 	vector<T>().swap(data);
+}
+
+template<class T>
+size_t Matrix<T>::getRows()
+{
+	return this->rows;
+}
+
+template<class T>
+size_t Matrix<T>::getCols()
+{
+	return this->cols;
 }
 
 template<class T>
@@ -286,6 +301,70 @@ template<class T>
 Matrix<T> Matrix<T>::operator*(T num) const
 {
 	return (*this) *= num;
+}
+
+template<class T>
+Matrix<T> Matrix<T>::hadamard(Matrix<T> m1, Matrix<T> m2)
+{
+	if (m1.rows == m2.rows && m1.rows == this->rows && m1.cols == m2.cols && m1.cols == this->cols) {
+		for (int i = 0; i < m1.rows; i++)
+			for (int j = 0; j < m1.cols; j++)
+				(*this)(i, j) = m1(i, j)*m2(i, j);
+		return *this;
+	}
+	cout << "Different matrix sizes(hadamard)" << endl;
+	exit(0);
+}
+
+template<class T>
+Matrix<T> Matrix<T>::kronecker(Matrix<T> m1, Matrix<T> m2)
+{
+	if (kroneckerR(m1, m2) == this->rows && kroneckerC(m1, m2) == this->cols) {
+		for (int i = 0; i < m1.getRows(); i++) {
+			for (int j = 0; j < m1.getCols(); j++) {
+				for (int k = 0; k < m2.getRows(); k++) {
+					for (int l = 0; l < m2.getCols(); l++) {
+						(*this)(i*m2.rows + k, j*m2.cols + l) = m1(i, j)*m2(k, l);
+					}
+				}
+			}
+		}
+		return *this;
+	}
+	cout << "Incorrect size(kronecker)" << endl;
+	exit(0);
+}
+
+template<class T>
+Matrix<T> Matrix<T>::concatOf(Matrix<T> m1, Matrix<T> m2)
+{
+	if (m1.rows == m2.rows) {
+		this->rows = m1.rows;
+		this->cols = m1.cols + m2.cols;
+		for (int i = 0; i < m1.rows; i++) {
+			for (int j = 0; j < m1.cols; j++) {
+				(*this)(i, j) = m1(i, j);
+			}
+			for (int j = 0; j < m2.cols; j++) {
+				(*this)(i, j + m1.cols) = m2(i, j);
+			}
+		}
+		return *this;
+	}
+	cout << "Number of rows must be equal(concatOf)" << endl;
+	exit(0);
+}
+
+template<class T>
+size_t kroneckerR(Matrix<T> m1, Matrix<T> m2)
+{
+	return m1.getRows()*m2.getRows();
+}
+
+template<class T>
+size_t kroneckerC(Matrix<T> m1, Matrix<T> m2)
+{
+	return m1.getCols()*m2.getCols();
 }
 
 template<class T>

@@ -9,6 +9,9 @@ public:
 	inline Matrix<T>(size_t rows, size_t cols, std::vector<T> data);
 	inline ~Matrix();
 
+	size_t getRows();
+	size_t getCols();
+
 	inline T&  operator()(size_t i, size_t j);
 	inline T   operator()(size_t i, size_t j) const;
 
@@ -35,8 +38,12 @@ public:
 	Matrix<T>& operator* (T num);
 	Matrix<T>  operator* (T num) const;
 
+	Matrix<T> hadamard (Matrix<T> m1, Matrix<T> m2);
+	Matrix<T> kronecker(Matrix<T> m1, Matrix<T> m2);
+	Matrix<T> concatOf (Matrix<T> m1, Matrix<T> m2);
+
 	Matrix<T> transpose();
-	inline void print(int precision=3);
+	inline void print(int precision=5);
 	
 private:
 	size_t rows;
