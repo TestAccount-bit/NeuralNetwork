@@ -14,13 +14,14 @@
 
 #define MAX_NUM_GRAPHS          100                 // Maximum number of graphs in a plot
 
+#define GPC_AUTO_X				0
 #define GPC_AUTO_SCALE          0.0                 // Auto scaling
 #define GPC_IMG_AUTO_SCALE      0                   // Auto scaling for images
 
-#define CANVAS_WIDTH            1920
-#define CANVAS_HEIGHT           1080
+#define CANVAS_WIDTH            800
+#define CANVAS_HEIGHT           600
 #define PLOT_LMARGIN_SIZE       80.0
-#define PLOT_RMARGIN_SIZE       250.0
+#define PLOT_RMARGIN_SIZE       150.0
 #define PLOT_LMARGIN            (PLOT_LMARGIN_SIZE/CANVAS_WIDTH)
 #define PLOT_RMARGIN            ((CANVAS_WIDTH - PLOT_RMARGIN_SIZE)/CANVAS_WIDTH)
 
@@ -119,6 +120,15 @@ int gpc_plot_2d (h_GPC_Plot *plotHandle,            // Plot handle
     const char *plotType,                           // Plot type - "lines", "points", "impulses", "linespoints"
     const char *pColour,                            // Colour - Use gnuplot> show colornames to see available colours
     const enum gpcNewAddGraphMode addMode);         // Add / new mode
+
+int gpc_graph_plot(h_GPC_Plot *plotHandle,
+	const char *function,
+	const int graphLength,
+	const char *pDataName,
+	const double xMin,
+	const double xMax,
+	const char *plotType,
+	const char *pColour);         // Add / new mode
     
 h_GPC_Plot *gpc_init_2d_dual_plot (const char *plotTitle,   // Plot title
     const enum gpcKeyMode keyMode);                 // Legend / key mode

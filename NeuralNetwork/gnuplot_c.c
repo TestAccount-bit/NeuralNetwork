@@ -108,7 +108,7 @@ h_GPC_Plot *gpc_init_2d (const char *plotTitle,
     fprintf (plotHandle->pipe, "set term %s 0 title \"%s\" size %u, %u\n", GPC_TERM, plotHandle->plotTitle, CANVAS_WIDTH, CANVAS_HEIGHT); // Set the plot
     fprintf (plotHandle->pipe, "set lmargin at screen %4.8lf\n", PLOT_LMARGIN); // Define the margins so that the graph is 512 pixels wide
     fprintf (plotHandle->pipe, "set rmargin at screen %4.8lf\n", PLOT_RMARGIN);
-    fprintf (plotHandle->pipe, "set border back\n");            // Set border behind plot
+    //fprintf (plotHandle->pipe, "set border back\n");            // Set border behind plot
 
     fprintf (plotHandle->pipe, "set xlabel \"%s\"\n", xLabel);  // Set the X label
     fprintf (plotHandle->pipe, "set ylabel \"%s\"\n", yLabel);  // Set the Y label
@@ -315,6 +315,30 @@ int gpc_plot_2d (h_GPC_Plot *plotHandle,
 #endif
 
     return (GPC_NO_ERROR);
+}
+
+int gpc_graph_plot(h_GPC_Plot *plotHandle,
+	const char *function,
+	const int graphLength,
+	const char *pDataName,
+	const double xMin,
+	const double xMax,
+	const char *plotType,
+	const char *pColour)
+{
+	plotHandle->numberOfGraphs = 0;
+
+	sprintf(plotHandle->graphArray[0].title, "%s", function);
+	sprintf(plotHandle->graphArray[0].formatString, "%s lc rgb \"%s\"", plotType, pColour);
+
+	fprintf(plotHandle->pipe, "plot %s with lines\n", function);  // Send start of plot and first plot command
+
+	fflush(plotHandle->pipe);                              // Flush the pipe
+
+#if GPC_DEBUG
+	mssleep(100);                                          // Slow down output so that pipe doesn't overflow when logging results
+#endif
+	return (GPC_NO_ERROR);
 }
 
 
@@ -1329,11 +1353,12 @@ int gpc_plot_polar (h_GPC_Plot *plotHandle,
 
 void gpc_close (h_GPC_Plot *plotHandle)
 {
+	printf("gpc_close()\n");
     mssleep (100);                                          // Wait - ensures pipes flushed
 
     fprintf (plotHandle->pipe, "exit\n");                   // Close GNUPlot
     pclose (plotHandle->pipe);                              // Close the pipe to Gnuplot
-	printf("gpc_close()\n");
+	
     free (plotHandle);                                      // Free the plot
 }
 
