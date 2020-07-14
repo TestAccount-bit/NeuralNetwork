@@ -319,25 +319,60 @@ int gpc_plot_2d (h_GPC_Plot *plotHandle,
 
 int gpc_graph_plot(h_GPC_Plot *plotHandle,
 	const char *function,
-	const int graphLength,
-	const char *pDataName,
 	const double xMin,
 	const double xMax,
-	const char *plotType,
+	const double yMin,
+	const double yMax,
 	const char *pColour)
 {
 	plotHandle->numberOfGraphs = 0;
 
 	sprintf(plotHandle->graphArray[0].title, "%s", function);
-	sprintf(plotHandle->graphArray[0].formatString, "%s lc rgb \"%s\"", plotType, pColour);
+	fprintf(plotHandle->pipe, "set xrange[%4.8lf:%4.8lf]\n", xMin, xMax);  
 
-	fprintf(plotHandle->pipe, "plot %s with lines\n", function);  // Send start of plot and first plot command
+	fprintf(plotHandle->pipe, "set xrange[%4.8lf:%4.8lf]\n", xMin, xMax);  
+	fprintf(plotHandle->pipe, "set yrange[%4.8lf:%4.8lf]\n", yMin, yMax);  
+	fprintf(plotHandle->pipe, "plot %s lt rgb \"%s\" lw %d\n", function, pColour, 3);  
 
 	fflush(plotHandle->pipe);                              // Flush the pipe
 
 #if GPC_DEBUG
 	mssleep(100);                                          // Slow down output so that pipe doesn't overflow when logging results
 #endif
+	return (GPC_NO_ERROR);
+}
+
+int gpc_plot_by_points(h_GPC_Plot * plotHandle, 
+	const char *name,
+	const int n, 
+	Point arr[],
+	const double xMin,
+	const double xMax, 
+	const double yMin,
+	const double yMax, 
+	const char *plotType,
+	const char * pColour)
+{
+	//arr = malloc(sizeof(Point)*n);
+
+	sprintf(plotHandle->graphArray[0].title, "%s", name);
+	sprintf(plotHandle->graphArray[0].formatString, "%s lc rgb \"%s\"", plotType, pColour);
+
+	fprintf(plotHandle->pipe, "$DATA%d << EOD\n", 0);
+	for (int i = 0; i < n; i++) {
+		fprintf(plotHandle->pipe, "%4.8lf %4.8lf\n", (arr[i]).xVal, (arr[i]).yVal);
+	}
+	fprintf(plotHandle->pipe, "EOD\n");
+
+
+	fprintf(plotHandle->pipe, "plot $DATA%d t \"%s\" w %s", 0, plotHandle->graphArray[0].title, plotHandle->graphArray[0].formatString);  // Send start of plot and first plot command
+	fprintf(plotHandle->pipe, "\n");                       
+
+	fflush(plotHandle->pipe); 
+#if GPC_DEBUG
+	mssleep(100);                                          // Slow down output so that pipe doesn't overflow when logging results
+#endif
+
 	return (GPC_NO_ERROR);
 }
 
@@ -1353,7 +1388,7 @@ int gpc_plot_polar (h_GPC_Plot *plotHandle,
 
 void gpc_close (h_GPC_Plot *plotHandle)
 {
-	printf("gpc_close()\n");
+	printf("GPC pipe closed\n");
     mssleep (100);                                          // Wait - ensures pipes flushed
 
     fprintf (plotHandle->pipe, "exit\n");                   // Close GNUPlot

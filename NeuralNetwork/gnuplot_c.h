@@ -18,6 +18,11 @@
 #define GPC_AUTO_SCALE          0.0                 // Auto scaling
 #define GPC_IMG_AUTO_SCALE      0                   // Auto scaling for images
 
+#define GPC_DEFAULT_MIN_X			-20
+#define GPC_DEFAULT_MAX_X			20
+#define GPC_DEFAULT_MIN_Y			-20
+#define GPC_DEFAULT_MAX_Y			20
+
 #define CANVAS_WIDTH            800
 #define CANVAS_HEIGHT           600
 #define PLOT_LMARGIN_SIZE       80.0
@@ -64,6 +69,12 @@ enum gpcPoleZeroMode                                // Pole zero plot modes
 #define GPC_MONOCHROME "set palette defined (0 'black', 1 'white')"
 #define GPC_COLOUR "set palette defined (0 'black', 1 'blue', 2 'red', 3 'yellow', 4 'white')"
 
+
+typedef struct
+{
+	double xVal;
+	double yVal;
+} Point;
 
 typedef struct                                      // Complex data type
 {
@@ -123,12 +134,22 @@ int gpc_plot_2d (h_GPC_Plot *plotHandle,            // Plot handle
 
 int gpc_graph_plot(h_GPC_Plot *plotHandle,
 	const char *function,
-	const int graphLength,
-	const char *pDataName,
 	const double xMin,
 	const double xMax,
+	const double yMin,
+	const double yMax,
+	const char *pColour);        
+
+int gpc_plot_by_points(h_GPC_Plot *plotHandle,
+	const char *name,
+	const int n,
+	Point arr[],
+	const double xMin,
+	const double xMax,
+	const double yMin,
+	const double yMax,
 	const char *plotType,
-	const char *pColour);         // Add / new mode
+	const char *pColour);         
     
 h_GPC_Plot *gpc_init_2d_dual_plot (const char *plotTitle,   // Plot title
     const enum gpcKeyMode keyMode);                 // Legend / key mode
