@@ -14,8 +14,8 @@
 
 #define MAX_NUM_GRAPHS          100                 // Maximum number of graphs in a plot
 
-#define GPC_AUTO_X				0
 #define GPC_AUTO_SCALE          0.0                 // Auto scaling
+
 #define GPC_IMG_AUTO_SCALE      0                   // Auto scaling for images
 
 #define GPC_DEFAULT_MIN_X			-20
@@ -23,8 +23,8 @@
 #define GPC_DEFAULT_MIN_Y			-20
 #define GPC_DEFAULT_MAX_Y			20
 
-#define CANVAS_WIDTH            800
-#define CANVAS_HEIGHT           600
+#define CANVAS_WIDTH            1200
+#define CANVAS_HEIGHT           700
 #define PLOT_LMARGIN_SIZE       80.0
 #define PLOT_RMARGIN_SIZE       150.0
 #define PLOT_LMARGIN            (PLOT_LMARGIN_SIZE/CANVAS_WIDTH)
@@ -51,6 +51,14 @@ enum gpcPlotSignMode                                // Sign modes - signed, posi
     GPC_NEGATIVE
 };
 
+enum gpcPlotBordersMode								// xrange[_:_] and yrange[_:_]
+{
+	GPC_TOP_BOTTOM,
+	GPC_TOP,
+	GPC_BOTTOM,
+	GPC_IGNORE
+};
+
 enum gpcNewAddGraphMode                             // New / Add graph modes
 {
     GPC_NEW = 0,
@@ -65,6 +73,12 @@ enum gpcPoleZeroMode                                // Pole zero plot modes
     GPC_CONJUGATE_ZERO
 };
 
+enum gpcScaling
+{
+	GPC_AUTOSCALE,
+	GPC_AUTOSCALE_X,
+	GPC_USERSCALE
+};
                                                     // Spectrogram and image colour palettes
 #define GPC_MONOCHROME "set palette defined (0 'black', 1 'white')"
 #define GPC_COLOUR "set palette defined (0 'black', 1 'blue', 2 'red', 3 'yellow', 4 'white')"
@@ -114,6 +128,16 @@ h_GPC_Plot *gpc_init_2d (const char *plotTitle,     // Plot title
     const double scalingMode,                       // Scaling mode
     const enum gpcPlotSignMode signMode,            // Sign mode - signed, positive, negative
     const enum gpcKeyMode keyMode);                 // Legend / key mode
+
+h_GPC_Plot *gpc_init_2d_(const char *plotTitle,     // Plot title
+	const char *xLabel,                             // X axis label
+	const char *yLabel,                             // Y axis label
+	const enum gpcScaling scalingMode,				// GPC_AUTO_SCALE, GPC_AUTO_SCALE_X, GPC_USER_SCALE
+	double xMin,									// if GPC_USER_SCALE
+	double xMax,									// if GPC_USER_SCALE
+	double yMin,									// if GPC_USER_SCALE or GPC_AUTO_SCALE_X
+	double yMax,									// if GPC_USER_SCALE or GPC_AUTO_SCALE_X
+	const enum gpcPlotBordersMode borderMode);		// Sign mode - signed, positive, negative
 
 h_GPC_Plot *gpc_init_2d_logscalex (const char *plotTitle,   // Plot title
     const char *xLabel,                             // X axis label

@@ -115,10 +115,10 @@ h_GPC_Plot *gpc_init_2d (const char *plotTitle,
     fprintf (plotHandle->pipe, "set grid x y\n");               // Turn on the grid
     fprintf (plotHandle->pipe, "set tics out nomirror\n");      // Tics format
 
-    fprintf (plotHandle->pipe, "set mxtics 4\n");
+    fprintf (plotHandle->pipe, "set mxtics 5\n");
     fprintf (plotHandle->pipe, "set mytics 2\n");
 
-	fprintf(plotHandle->pipe, "set size ratio 1\n");
+	fprintf(plotHandle->pipe, "set size ratio 0.7\n");
 
 
     if (keyMode == GPC_KEY_ENABLE) {
@@ -148,6 +148,89 @@ h_GPC_Plot *gpc_init_2d (const char *plotTitle,
     plotHandle->numberOfGraphs = -1;                            // Initialize number of graphs
 
     return (plotHandle);
+}
+
+h_GPC_Plot *gpc_init_2d_(const char * plotTitle, 
+	const char * xLabel, 
+	const char * yLabel, 
+	const enum gpcScaling scalingMode, 
+	double xMin, 
+	double xMax, 
+	double yMin, 
+	double yMax, 
+	const enum gpcPlotBordersMode borderMode)
+{
+	h_GPC_Plot *plotHandle;                                 // Create plot
+
+	plotHandle = (h_GPC_Plot*)malloc(sizeof(h_GPC_Plot));    // Malloc plot and check for error
+	if (plotHandle == NULL) {
+		return (plotHandle);
+	}
+
+	plotHandle->pipe = popen(GNUPLOT_CMD, "w");            // Open pipe to Gnuplot and check for error
+	if (plotHandle->pipe == NULL) {
+		printf("\n\nGnuplot/C Error\n");
+		printf("Gnuplot/C can not find the required Gnuplot executable.\n");
+		printf("Please ensure you have installed Gnuplot from (http://www.gnuplot.info)\n");
+		printf("and that the executable program is located in the system PATH.\n\n");
+
+		free(plotHandle);
+		return (plotHandle);
+	}
+
+	strcpy(plotHandle->plotTitle, plotTitle);              // Set plot title in handle
+
+	fprintf(plotHandle->pipe, "set term %s 0 title \"%s\" size %u, %u\n", GPC_TERM, plotHandle->plotTitle, CANVAS_WIDTH, CANVAS_HEIGHT); // Set the plot
+	fprintf(plotHandle->pipe, "set lmargin at screen %4.8lf\n", PLOT_LMARGIN); // Define the margins so that the graph is 512 pixels wide
+	fprintf(plotHandle->pipe, "set rmargin at screen %4.8lf\n", PLOT_RMARGIN);
+	//fprintf (plotHandle->pipe, "set border back\n");            // Set border behind plot
+
+	fprintf(plotHandle->pipe, "set xlabel \"%s\"\n", xLabel);  // Set the X label
+	fprintf(plotHandle->pipe, "set ylabel \"%s\"\n", yLabel);  // Set the Y label
+	fprintf(plotHandle->pipe, "set grid x y\n");               // Turn on the grid
+	fprintf(plotHandle->pipe, "set tics out nomirror\n");      // Tics format
+
+	fprintf(plotHandle->pipe, "set mxtics 5\n");
+	fprintf(plotHandle->pipe, "set mytics 5\n");
+
+	fprintf(plotHandle->pipe, "set size ratio 0.7\n");
+	fprintf(plotHandle->pipe, "set key out vert nobox\n");		// Legend / key location
+
+
+	if (scalingMode == GPC_AUTOSCALE) {						// Set the Y axis scaling
+		fprintf(plotHandle->pipe, "set autoscale  yfix\n");		// Auto-scale Y axis
+	}
+	else if (scalingMode == GPC_AUTOSCALE_X)
+	{
+		if (borderMode == GPC_TOP_BOTTOM) {					
+			fprintf(plotHandle->pipe, "set yrange [%1.6le:%1.6le]\n", yMin, yMax);
+		}
+		else if (borderMode == GPC_TOP && xMax > 0) {	                    
+			fprintf(plotHandle->pipe, "set yrange [%1.6le:%1.6le]\n", -yMax / 20.0, yMax);
+		}
+		else if (borderMode == GPC_TOP) {	                   
+			fprintf(plotHandle->pipe, "set yrange [%1.6le:%1.6le]\n", yMax - 20.0, yMax);
+		}
+		else if (borderMode == GPC_BOTTOM && xMin < 0) {                                                  
+			fprintf(plotHandle->pipe, "set yrange [%1.6le:%1.6le]\n", yMin, -yMin/20.0);
+		}
+		else if (borderMode == GPC_BOTTOM) {                                                  
+			fprintf(plotHandle->pipe, "set yrange [%1.6le:%1.6le]\n", yMin, -yMin / 20.0);
+		}
+		else {
+			fprintf(plotHandle->pipe, "set yrange [%1.6le:%1.6le]\n", yMin, yMax);
+		}
+	}
+	else if (scalingMode == GPC_USERSCALE) {
+		fprintf(plotHandle->pipe, "set yrange [%1.6le:%1.6le]\n", yMin, yMax);
+		fprintf(plotHandle->pipe, "set xrange [%1.6le:%1.6le]\n", xMin, xMax);
+	}
+
+	fflush(plotHandle->pipe);                                  // flush the pipe
+
+	plotHandle->numberOfGraphs = -1;                            // Initialize number of graphs
+
+	return (plotHandle);
 }
 
 /********************************************************
