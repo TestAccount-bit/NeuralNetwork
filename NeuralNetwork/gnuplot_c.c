@@ -59,6 +59,13 @@
     #define mssleep(u) usleep(u*1000)
 #endif
 
+const char *plotColour[] = { 
+	"purple", "green", "blue", "black", "orange", 
+	"cyan", "violet", "grey", "magenta", "light-red",
+	"web-green", "web-blue", "goldenrod", "dark-spring-green", "orchid",
+	"steelblue", "turquoise", "aquamarine", "gold", "navy",
+	"khaki", "coral", "plum", "olive", "salmon"};
+
 /********************************************************
 * Function : gpc_init_2d
 *
@@ -402,26 +409,37 @@ int gpc_plot_2d (h_GPC_Plot *plotHandle,
 
 int gpc_graph_plot(h_GPC_Plot *plotHandle,
 	const char *function,
-	const double xMin,
-	const double xMax,
-	const double yMin,
-	const double yMax,
 	const char *pColour)
 {
-	plotHandle->numberOfGraphs = 0;
+	plotHandle->numberOfGraphs++;
+	if (plotHandle->numberOfGraphs >= (MAX_NUM_GRAPHS - 1)) {   // Check we haven't overflowed the maximum number of graphs
+		return (GPC_ERROR);
+	}
+	//printf("%d", plotHandle->numberOfGraphs);
 
-	sprintf(plotHandle->graphArray[0].title, "%s", function);
-	fprintf(plotHandle->pipe, "set xrange[%4.8lf:%4.8lf]\n", xMin, xMax);  
+	if (strcmp(pColour, "rand")==0) {
+		pColour = plotColour[rand() % 25];
+	}
+	sprintf(plotHandle->graphArray[plotHandle->numberOfGraphs].title, "%s", function);
+	sprintf(plotHandle->graphArray[plotHandle->numberOfGraphs].formatString, " lc rgb \"%s\"", pColour);
+	sprintf(plotHandle->graphArray[plotHandle->numberOfGraphs].dataPrint, 
+		"%s t \"%s\" %s lw %d", 
+		function, 
+		plotHandle->graphArray[plotHandle->numberOfGraphs].title,
+		plotHandle->graphArray[plotHandle->numberOfGraphs].formatString,
+		2);
 
-	fprintf(plotHandle->pipe, "set xrange[%4.8lf:%4.8lf]\n", xMin, xMax);  
-	fprintf(plotHandle->pipe, "set yrange[%4.8lf:%4.8lf]\n", yMin, yMax);  
-	fprintf(plotHandle->pipe, "plot %s lt rgb \"%s\" lw %d\n", function, pColour, 3);  
+	fprintf(plotHandle->pipe, "plot %s", plotHandle->graphArray[0].dataPrint);  
+	for (int i = 1; i <= plotHandle->numberOfGraphs; i++) { 
+		fprintf(plotHandle->pipe, ", \\\n %s", plotHandle->graphArray[i].dataPrint); 
+	}
+	fprintf(plotHandle->pipe, "\n");                       
 
 	fflush(plotHandle->pipe);                              // Flush the pipe
-
 #if GPC_DEBUG
 	mssleep(100);                                          // Slow down output so that pipe doesn't overflow when logging results
 #endif
+
 	return (GPC_NO_ERROR);
 }
 
@@ -429,29 +447,41 @@ int gpc_plot_by_points(h_GPC_Plot * plotHandle,
 	const char *name,
 	const int n, 
 	Point arr[],
-	const double xMin,
-	const double xMax, 
-	const double yMin,
-	const double yMax, 
 	const char *plotType,
-	const char * pColour)
-{
-	//arr = malloc(sizeof(Point)*n);
+	const char *pColour)
+{                            
+	plotHandle->numberOfGraphs++;
+	if (plotHandle->numberOfGraphs >= (MAX_NUM_GRAPHS - 1)) {   // Check we haven't overflowed the maximum number of graphs
+		return (GPC_ERROR);
+	}
+	//printf("%d", plotHandle->numberOfGraphs);
+	if (strcmp(pColour, "rand")==0) {
+		pColour = plotColour[rand() % 25];
+	}
 
-	sprintf(plotHandle->graphArray[0].title, "%s", name);
-	sprintf(plotHandle->graphArray[0].formatString, "%s lc rgb \"%s\"", plotType, pColour);
+	sprintf(plotHandle->graphArray[plotHandle->numberOfGraphs].title, "%s", name);
+	sprintf(plotHandle->graphArray[plotHandle->numberOfGraphs].formatString, "%s lc rgb \"%s\"", plotType, pColour);
+	sprintf(plotHandle->graphArray[plotHandle->numberOfGraphs].dataPrint, 
+		"$DATA%d u 1:2 t \"%s\" w %s lw %d", 
+		plotHandle->numberOfGraphs, 
+		plotHandle->graphArray[plotHandle->numberOfGraphs].title, 
+		plotHandle->graphArray[plotHandle->numberOfGraphs].formatString,
+		3);
 
-	fprintf(plotHandle->pipe, "$DATA%d << EOD\n", 0);
+	fprintf(plotHandle->pipe, "$DATA%d << EOD\n", plotHandle->numberOfGraphs);
 	for (int i = 0; i < n; i++) {
 		fprintf(plotHandle->pipe, "%4.8lf %4.8lf\n", (arr[i]).xVal, (arr[i]).yVal);
 	}
 	fprintf(plotHandle->pipe, "EOD\n");
 
 
-	fprintf(plotHandle->pipe, "plot $DATA%d t \"%s\" w %s", 0, plotHandle->graphArray[0].title, plotHandle->graphArray[0].formatString);  // Send start of plot and first plot command
-	fprintf(plotHandle->pipe, "\n");                       
+	fprintf(plotHandle->pipe, "plot %s", plotHandle->graphArray[0].dataPrint); 
+	for (int i = 1; i <= plotHandle->numberOfGraphs; i++) {  
+		fprintf(plotHandle->pipe, ", \\\n %s", plotHandle->graphArray[i].dataPrint); 
+	}
+	fprintf(plotHandle->pipe, "\n");                      
 
-	fflush(plotHandle->pipe); 
+	fflush(plotHandle->pipe);                              
 #if GPC_DEBUG
 	mssleep(100);                                          // Slow down output so that pipe doesn't overflow when logging results
 #endif

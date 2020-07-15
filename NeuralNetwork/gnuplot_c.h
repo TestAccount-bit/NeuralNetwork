@@ -102,6 +102,7 @@ typedef struct
     char filename [40];                             // Graph filename
     char title [80];                                // Graph title
     char formatString [40];                         // Graph format string "lines", "points" etc
+	char dataPrint[120];
 } h_GPC_Graph;
 
 
@@ -158,20 +159,12 @@ int gpc_plot_2d (h_GPC_Plot *plotHandle,            // Plot handle
 
 int gpc_graph_plot(h_GPC_Plot *plotHandle,
 	const char *function,
-	const double xMin,
-	const double xMax,
-	const double yMin,
-	const double yMax,
 	const char *pColour);        
 
 int gpc_plot_by_points(h_GPC_Plot *plotHandle,
 	const char *name,
 	const int n,
 	Point arr[],
-	const double xMin,
-	const double xMax,
-	const double yMin,
-	const double yMax,
 	const char *plotType,
 	const char *pColour);         
     
