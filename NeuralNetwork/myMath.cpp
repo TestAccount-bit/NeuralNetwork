@@ -1,8 +1,8 @@
 #include <vector>
 #include <iostream>
+#include <math.h>
 #include "Matrix.h"
 #include "pch.h"
-#include "myMath.h"
 #include "Matrix.cpp"
 
 
@@ -40,4 +40,39 @@ Matrix<int> vec_to_mat(std::vector<int> v){
 		m(i, v.at(i) - 1) = 1;
 	}
 	return m;
+}
+
+
+Matrix<double> activation1(Matrix<double> m)
+{
+	Matrix<double> ret(m.getRows(), m.getCols());
+	for (int i = 0; i < m.getRows(); i++) {
+		for (int j = 0; j < m.getCols(); j++) {
+			ret(i, j) = (tanh(m(i, j)) + 1) / 2;
+		}
+	}
+	return ret;
+}
+
+Matrix<double> activation_der1(Matrix<double> m)
+{
+	Matrix<double> ret(m.getRows(), m.getCols());
+	for (int i = 0; i < m.getRows(); i++) {
+		for (int j = 0; j < m.getCols(); j++) {
+			ret(i, j) = (1 - (tanh(m(i, j))*tanh(m(i, j)))) / 2.0;
+		}
+	}
+	return ret;
+}
+
+
+double foo1(double x)
+{
+	return (tanh(x)+1)/2;
+}
+
+
+double foo_d1(double x)
+{
+	return (1-(tanh(x)*tanh(x)))/2.0;
 }

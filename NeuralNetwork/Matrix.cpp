@@ -392,7 +392,8 @@ void Matrix<T>::print(int precision)
 	try {
 		for (int i = 0; i < (int)rows; i++) {
 			for (int j = 0; j < (int)cols; j++) {
-				cout << setw(precision) << data.at(i*cols + j) << " ";
+				cout << setw(precision) << fixed << data.at(i*cols + j) << " ";
+				//cout << setw(precision) << setprecision(3) << fixed <<   data.at(i*cols + j) << " ";
 			}
 			cout << endl;
 		}
