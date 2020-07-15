@@ -41,10 +41,10 @@ public:
 	Matrix<T> hadamard (Matrix<T> m1, Matrix<T> m2);
 	Matrix<T> kronecker(Matrix<T> m1, Matrix<T> m2);
 	Matrix<T> concatOf (Matrix<T> m1, Matrix<T> m2);
-
 	Matrix<T> transpose();
-	inline void print(int precision=5);
+	void print(int precision=5);
 	
+
 private:
 	size_t rows;
 	size_t cols;

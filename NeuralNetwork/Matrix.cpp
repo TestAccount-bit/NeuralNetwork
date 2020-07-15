@@ -10,6 +10,7 @@
 using namespace std;
 
 
+
 template<class T>
 inline Matrix<T>::Matrix(size_t rows, size_t cols)
 {
@@ -17,7 +18,7 @@ inline Matrix<T>::Matrix(size_t rows, size_t cols)
 	if (rows == 0 || cols == 0 || rows > MATRIX_MAX_SIZE || cols > MATRIX_MAX_SIZE)
 	{ 
 		cout << "Nonpositive amount of rows or/and columns" << endl;
-		exit(0);
+		exit(1);
 	}
 	else {
 		this->rows = rows;
@@ -31,11 +32,11 @@ inline Matrix<T>::Matrix(size_t rows, size_t cols, std::vector<T> data)
 {
 	if (data.size() != rows * cols) {
 		cout << "rows*cols != data.size()" << endl;
-		exit(0);
+		exit(1);
 	}
 	if (rows == 0 || cols == 0 || rows > MATRIX_MAX_SIZE || cols > MATRIX_MAX_SIZE) {
 		cout << "\"rows\" and \"cols\" must be more than 0" << endl;
-		exit(0);
+		exit(1);
 	}
 	this->rows = rows;
 	this->cols = cols;
@@ -69,7 +70,7 @@ inline T & Matrix<T>::operator()(size_t i, size_t j)
 	else {
 		cout << "Out of bounds " << this->rows << " " << this->cols <<endl;
 		cout << "i " << i << ", j " << j << endl;
-		exit(0);
+		exit(1);
 	}
 }
 
@@ -81,34 +82,34 @@ inline T Matrix<T>::operator()(size_t i, size_t j) const
 	}
 	else {
 		cout << "Out of bounds(2) " << endl;
-		exit(0);
+		exit(1);
 	}
 }
 
 template<class T>
 Matrix<T>& Matrix<T>::operator=(Matrix<T> m)
 {
-	if (m.rows == this->rows && m.cols == this->cols) {
+	//if (m.rows == this->rows && m.cols == this->cols) {
 		this->rows = m.rows;
 		this->cols = m.cols;
 		this->data = m.data;
 		return *this;
-	}
+	//}
 	cout << "Matrices of different size(1)" << endl;
-	exit(0);
+	exit(1);
 }
 
 template<class T>
 Matrix<T> Matrix<T>::operator=(Matrix<T> m) const
 {
-	if (m.rows == this->rows && m.cols == this->cols) {
+	//if (m.rows == this->rows && m.cols == this->cols) {
 		this->rows = m.rows;
 		this->cols = m.cols;
 		this->data = m.data;
 		return *this;
-	}
+	//}
 	cout << "Matrices of different size(2)" << endl;
-	exit(0);
+	exit(1);
 }
 
 template<class T>
@@ -386,7 +387,7 @@ Matrix<T> Matrix<T>::transpose()
 
 
 template<class T>
-inline void Matrix<T>::print(int precision)
+void Matrix<T>::print(int precision)
 {
 	try {
 		for (int i = 0; i < (int)rows; i++) {
@@ -401,4 +402,6 @@ inline void Matrix<T>::print(int precision)
 		cout << e.what() << endl;
 	}
 }
+
+
 
