@@ -89,27 +89,19 @@ inline T Matrix<T>::operator()(size_t i, size_t j) const
 template<class T>
 Matrix<T>& Matrix<T>::operator=(Matrix<T> m)
 {
-	//if (m.rows == this->rows && m.cols == this->cols) {
-		this->rows = m.rows;
-		this->cols = m.cols;
-		this->data = m.data;
-		return *this;
-	//}
-	cout << "Matrices of different size(1)" << endl;
-	exit(1);
+	this->rows = m.rows;
+	this->cols = m.cols;
+	this->data = m.data;
+	return *this;
 }
 
 template<class T>
 Matrix<T> Matrix<T>::operator=(Matrix<T> m) const
 {
-	//if (m.rows == this->rows && m.cols == this->cols) {
-		this->rows = m.rows;
-		this->cols = m.cols;
-		this->data = m.data;
-		return *this;
-	//}
-	cout << "Matrices of different size(2)" << endl;
-	exit(1);
+	this->rows = m.rows;
+	this->cols = m.cols;
+	this->data = m.data;
+	return *this;
 }
 
 template<class T>
@@ -120,11 +112,10 @@ Matrix<T>& Matrix<T>::operator+=(Matrix<T> m)
 		for (int i = 0; i < m.rows; i++)
 			for (int j = 0; j < m.cols; j++)
 				(*this)(i, j) = (*this)(i, j) + m(i, j);
-		//m3.print();
 		return *this;
 	}
-	cout << "Can't add different matricies(5)" << endl;
-	exit(0);
+	cout << "Can't add different matricies(1)" << endl;
+	exit(1);
 }
 
 template<class T>
@@ -135,11 +126,10 @@ Matrix<T> Matrix<T>::operator+=(Matrix<T> m) const
 		for (int i = 0; i < m.rows; i++)
 			for (int j = 0; j < m.cols; j++)
 				this(i, j) = this(i, j) + m(i, j);
-		//m3.print();
 		return this;
 	}
-	cout << "Can't add different matricies(4)" << endl;
-	exit(0);
+	cout << "Can't add different matricies(2)" << endl;
+	exit(1);
 }
 
 template<class T>
@@ -149,10 +139,8 @@ Matrix<T>& Matrix<T>::operator+(Matrix<T> m)
 	{
 		return (*this) += m;
 	}
-	cout << "m.rows " << m.rows << ", m.cols " << m.cols << endl;
-	cout << "this->rows " << this->rows << ", this->cols " << this->cols << endl;
-	cout << "Can't add different matricies(6)" << endl;
-	exit(0); 
+	cout << "Can't add different matricies(3)" << endl;
+	exit(1); 
 }
 
 template<class T>
@@ -164,8 +152,8 @@ Matrix<T> Matrix<T>::operator+(Matrix<T> m) const
 	}
 	cout << "m.rows " << m.rows << ", m.cols " << m.cols << endl;
 	cout << "this->rows " << this->rows << ", this->cols " << this->cols << endl;
-	cout << "Can't add different matricies(7)" << endl;
-	exit(0); 
+	cout << "Can't add different matricies(4)" << endl;
+	exit(1); 
 }
 
 template<class T>
@@ -179,7 +167,7 @@ Matrix<T>& Matrix<T>::operator-=(Matrix<T> m)
 		return *this;
 	}
 	cout << "Can't subtract different matricies(1)" << endl;
-	exit(0);
+	exit(1);
 }
 
 template<class T>
@@ -192,8 +180,8 @@ Matrix<T> Matrix<T>::operator-=(Matrix<T> m) const
 				(*this)(i, j) = (*this)(i, j) - m(i, j);
 		return *this;
 	}
-	cout << "Can't subtract different matricies(1)" << endl;
-	exit(0);
+	cout << "Can't subtract different matricies(2)" << endl;
+	exit(1);
 }
 
 template<class T>
@@ -204,7 +192,7 @@ Matrix<T>& Matrix<T>::operator-(Matrix<T> m)
 		return (*this) -= m;
 	}
 	cout << "Can't subtract different matrices(3)" << endl;
-	exit(0);
+	exit(1);
 }
 
 template<class T>
@@ -215,7 +203,7 @@ Matrix<T> Matrix<T>::operator-(Matrix<T> m) const
 		return (*this) -= m;
 	}
 	cout << "Can't subtract different matrices(4)" << endl;
-	exit(0);
+	exit(1);
 }
 
 template<class T>
@@ -238,7 +226,7 @@ Matrix<T>& Matrix<T>::operator*=(Matrix<T> m)
 		return *this;
 	}
 	cout << "this->cols(" << this->cols << ") must be equal m.rows(" << m.rows << ")" << endl;
-	exit(0);
+	exit(1);
 }
 
 template<class T>
@@ -259,7 +247,7 @@ Matrix<T> Matrix<T>::operator*=(Matrix<T> m) const
 		return *this;
 	}
 	cout << "this->cols(" << this->cols << ") must be equal m.rows(" << m.rows << ")" << endl;
-	exit(0);
+	exit(1);
 }
 
 template<class T>
@@ -314,7 +302,7 @@ Matrix<T> Matrix<T>::hadamard(Matrix<T> m1, Matrix<T> m2)
 		return *this;
 	}
 	cout << "Different matrix sizes(hadamard)" << endl;
-	exit(0);
+	exit(1);
 }
 
 template<class T>
@@ -333,7 +321,7 @@ Matrix<T> Matrix<T>::kronecker(Matrix<T> m1, Matrix<T> m2)
 		return *this;
 	}
 	cout << "Incorrect size(kronecker)" << endl;
-	exit(0);
+	exit(1);
 }
 
 template<class T>
@@ -353,7 +341,7 @@ Matrix<T> Matrix<T>::concatOf(Matrix<T> m1, Matrix<T> m2)
 		return *this;
 	}
 	cout << "Number of rows must be equal(concatOf)" << endl;
-	exit(0);
+	exit(1);
 }
 
 template<class T>
