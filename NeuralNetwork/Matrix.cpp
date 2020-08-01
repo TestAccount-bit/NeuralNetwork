@@ -131,7 +131,7 @@ Matrix<T> Matrix<T>::operator+=(Matrix<T> m) const
 	cout << "Can't add different matricies(2)" << endl;
 	exit(1);
 }
-
+/*
 template<class T>
 Matrix<T>& Matrix<T>::operator+(Matrix<T> m)
 {
@@ -155,6 +155,23 @@ Matrix<T> Matrix<T>::operator+(Matrix<T> m) const
 	cout << "Can't add different matricies(4)" << endl;
 	exit(1); 
 }
+*/
+template<class T>
+Matrix<T> operator+(Matrix<T> m1, Matrix<T> m2)
+{
+	if (m1.getRows() == m2.getRows() && m1.getCols() == m2.getCols()) {
+		Matrix<T> ret(m1.getRows(), m1.getCols());
+		for (int i = 0; i < m1.getRows(); i++)
+			for (int j = 0; j < m1.getCols(); j++)
+				ret(i, j) = m1(i, j) + m2(i, j);
+		return ret;
+	}
+	cout << " m1.getRows() != m2.getRows() || m1.getCols() != m2.getCols() " << endl;
+	cout << "sum operator overloading" << endl;
+	exit(1);
+}
+
+
 
 template<class T>
 Matrix<T>& Matrix<T>::operator-=(Matrix<T> m)

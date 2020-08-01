@@ -19,10 +19,13 @@ public:
 	Matrix<T>  operator= (Matrix<T> m) const;
 
 	Matrix<T>& operator+=(Matrix<T> m);
-	Matrix<T>  operator+=(Matrix<T> m) const;
+	Matrix<T>  operator+=(Matrix<T> m) const;/*
 	Matrix<T>& operator+ (Matrix<T> m);
 	Matrix<T>  operator+ (Matrix<T> m) const;
 
+	Matrix<T>& operator+ (Matrix<T> m1, Matrix<T> m2);
+	Matrix<T>  operator+ (Matrix<T> m1, Matrix<T> m2) const;
+	*/
 	Matrix<T>& operator-=(Matrix<T> m);
 	Matrix<T>  operator-=(Matrix<T> m) const;
 	Matrix<T>& operator- (Matrix<T> m);
