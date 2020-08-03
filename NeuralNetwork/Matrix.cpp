@@ -131,31 +131,7 @@ Matrix<T> Matrix<T>::operator+=(Matrix<T> m) const
 	cout << "Can't add different matricies(2)" << endl;
 	exit(1);
 }
-/*
-template<class T>
-Matrix<T>& Matrix<T>::operator+(Matrix<T> m)
-{
-	if (m.rows == this->rows && m.cols == this->cols) 
-	{
-		return (*this) += m;
-	}
-	cout << "Can't add different matricies(3)" << endl;
-	exit(1); 
-}
 
-template<class T>
-Matrix<T> Matrix<T>::operator+(Matrix<T> m) const
-{
-	if (m.rows == this->rows && m.cols == this->cols) 
-	{
-		return (*this) += m;
-	}
-	cout << "m.rows " << m.rows << ", m.cols " << m.cols << endl;
-	cout << "this->rows " << this->rows << ", this->cols " << this->cols << endl;
-	cout << "Can't add different matricies(4)" << endl;
-	exit(1); 
-}
-*/
 template<class T>
 Matrix<T> operator+(Matrix<T> m1, Matrix<T> m2)
 {
@@ -202,24 +178,16 @@ Matrix<T> Matrix<T>::operator-=(Matrix<T> m) const
 }
 
 template<class T>
-Matrix<T>& Matrix<T>::operator-(Matrix<T> m)
+Matrix<T> operator-(Matrix<T> m1, Matrix<T> m2)
 {
-	if (m.rows == this->rows && m.cols == this->cols)
-	{
-		return (*this) -= m;
+	if (m1.getRows() == m2.getRows() && m1.getCols() == m2.getCols()) {
+		Matrix<T> ret(m1.getRows(), m1.getCols());
+		for (int i = 0; i < m1.getRows(); i++)
+			for (int j = 0; j < m1.getCols(); j++)
+				ret(i, j) = m1(i, j) - m2(i, j);
+		return ret;
 	}
 	cout << "Can't subtract different matrices(3)" << endl;
-	exit(1);
-}
-
-template<class T>
-Matrix<T> Matrix<T>::operator-(Matrix<T> m) const
-{
-	if (m.rows == this->rows && m.cols == this->cols)
-	{
-		return (*this) -= m;
-	}
-	cout << "Can't subtract different matrices(4)" << endl;
 	exit(1);
 }
 
@@ -268,15 +236,21 @@ Matrix<T> Matrix<T>::operator*=(Matrix<T> m) const
 }
 
 template<class T>
-Matrix<T>& Matrix<T>::operator*(Matrix<T> m)
+Matrix<T> operator*(Matrix<T> m1, Matrix<T> m2)
 {
-	return (*this) *= m;
-}
-
-template<class T>
-Matrix<T> Matrix<T>::operator*(Matrix<T> m) const
-{
-	return (*this) *= m;
+	if (m1.getCols() == m2.getRows()) {
+		Matrix<T> ret(m1.getRows(), m2.getCols());
+		for (int i = 0; i < m1.getRows(); i++) {
+			for (int j = 0; j < m2.getCols(); j++) {
+				for (int k = 0; k < m1.getCols(); k++) {
+					ret(i, j) += (m1(i, k) * m2(k, j));
+				}
+			}
+		}
+		return ret;
+	}
+	cout << "m1.cols(" << m1.getCols() << ") must be equal m2.rows(" << m2.getRows() << ")" << endl;
+	exit(1);
 }
 
 template<class T>
@@ -298,16 +272,29 @@ Matrix<T> Matrix<T>::operator*=(T num) const
 }
 
 template<class T>
-Matrix<T>& Matrix<T>::operator*(T num)
+Matrix<T> operator*(Matrix<T> m, T num)
 {
-	return (*this) *= num;
+	Matrix<T> ret(m.getRows(), m.getCols());
+	for (int i = 0; i < m.getRows(); i++) {
+		for (int j = 0; j < m.getCols(); j++) {
+			ret(i, j) = (m(i, j) * num);	
+		}
+	}
+	return ret;
 }
 
 template<class T>
-Matrix<T> Matrix<T>::operator*(T num) const
+Matrix<T> operator*(T num, Matrix<T> m)
 {
-	return (*this) *= num;
+	Matrix<T> ret(m.getRows(), m.getCols());
+	for (int i = 0; i < m.getRows(); i++) {
+		for (int j = 0; j < m.getCols(); j++) {
+			ret(i, j) = (m(i, j) * num);	
+		}
+	}
+	return ret;
 }
+
 
 template<class T>
 Matrix<T> Matrix<T>::hadamard(Matrix<T> m1, Matrix<T> m2)
