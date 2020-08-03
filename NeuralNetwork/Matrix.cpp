@@ -370,9 +370,11 @@ Matrix<T> Matrix<T>::transpose()
 			temp(j, i) = (*this)(i, j);
 		}
 	}
+	// don't need this //
 	int tmp = this->rows;
 	this->rows = this->cols;
 	this->cols = tmp;
+	/////////////////////
 	(*this) = temp;
 	return *this;
 }
@@ -381,19 +383,16 @@ Matrix<T> Matrix<T>::transpose()
 template<class T>
 void Matrix<T>::print(int precision)
 {
-	try {
-		for (int i = 0; i < (int)rows; i++) {
-			for (int j = 0; j < (int)cols; j++) {
-				cout << setw(precision) << fixed << data.at(i*cols + j) << " ";
-				//cout << setw(precision) << setprecision(3) << fixed <<   data.at(i*cols + j) << " ";
-			}
-			cout << endl;
+	for (int i = 0; i < (int)this->rows; i++) {
+		for (int j = 0; j < (int)this->cols; j++) {
+			//cout << setw(precision) << fixed << data.at(i*cols + j) << " ";
+			//cout << setw(precision) << fixed << data.at(i*cols + j) << " ";
+			cout << setw(precision) << fixed << data.at(i*cols + j) << " ";
+			//cout << setw(precision) << data.at(i*cols + j) << " ";
 		}
 		cout << endl;
 	}
-	catch (exception& e) {
-		cout << e.what() << endl;
-	}
+	cout << endl;
 }
 
 
