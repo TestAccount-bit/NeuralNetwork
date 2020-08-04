@@ -295,7 +295,6 @@ Matrix<T> operator*(T num, Matrix<T> m)
 	return ret;
 }
 
-
 template<class T>
 Matrix<T> Matrix<T>::hadamard(Matrix<T> m1, Matrix<T> m2)
 {
