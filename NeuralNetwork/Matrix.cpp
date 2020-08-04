@@ -299,10 +299,13 @@ Matrix<T> operator*(T num, Matrix<T> m)
 template<class T>
 Matrix<T> Matrix<T>::hadamard(Matrix<T> m1, Matrix<T> m2)
 {
-	if (m1.rows == m2.rows && m1.rows == this->rows && m1.cols == m2.cols && m1.cols == this->cols) {
+	if (m1.rows == m2.rows && m1.cols == m2.cols) {
+		Matrix<T> ret(m1.rows, m1.cols);
 		for (int i = 0; i < m1.rows; i++)
 			for (int j = 0; j < m1.cols; j++)
-				(*this)(i, j) = m1(i, j)*m2(i, j);
+				ret(i, j) = m1(i, j)*m2(i, j);
+		(*this) = ret;
+		ret.~Matrix();
 		return *this;
 	}
 	cout << "Different matrix sizes(hadamard)" << endl;
@@ -370,12 +373,8 @@ Matrix<T> Matrix<T>::transpose()
 			temp(j, i) = (*this)(i, j);
 		}
 	}
-	// don't need this //
-	int tmp = this->rows;
-	this->rows = this->cols;
-	this->cols = tmp;
-	/////////////////////
 	(*this) = temp;
+	temp.~Matrix();
 	return *this;
 }
 
