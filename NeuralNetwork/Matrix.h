@@ -35,7 +35,7 @@ public:
 	Matrix<T> kronecker(Matrix<T> m1, Matrix<T> m2);
 	Matrix<T> concatOf (Matrix<T> m1, Matrix<T> m2);
 	Matrix<T> transpose();
-	void print(int precision=5);
+	void print(int width=7, int precision=4);
 	
 
 private:

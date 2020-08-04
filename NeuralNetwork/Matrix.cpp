@@ -381,14 +381,11 @@ Matrix<T> Matrix<T>::transpose()
 
 
 template<class T>
-void Matrix<T>::print(int precision)
+void Matrix<T>::print(int width, int precision)
 {
 	for (int i = 0; i < (int)this->rows; i++) {
 		for (int j = 0; j < (int)this->cols; j++) {
-			//cout << setw(precision) << fixed << data.at(i*cols + j) << " ";
-			//cout << setw(precision) << fixed << data.at(i*cols + j) << " ";
-			cout << setw(precision) << fixed << data.at(i*cols + j) << " ";
-			//cout << setw(precision) << data.at(i*cols + j) << " ";
+			cout << setw(width) << setfill(' ') << setprecision(precision) << data.at(i*cols + j) << " ";
 		}
 		cout << endl;
 	}
