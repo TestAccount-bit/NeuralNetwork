@@ -201,7 +201,6 @@ Matrix<T>& Matrix<T>::operator*=(Matrix<T> m)
 				for (int k = 0; k < this->cols; k++) {
 					//cout << "ret(" << i << ", " << j << ") += (" << (*this)(i, k) << "*" << m(k, j) << ")" << endl;
 					ret(i, j) += ((*this)(i, k) * m(k, j));
-					//cout << "ret(" << i << ", " << j << ") ==" << ret(i, j) << endl;
 				}
 				
 			}
